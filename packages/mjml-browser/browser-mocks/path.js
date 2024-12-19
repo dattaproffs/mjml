@@ -1,7 +1,4 @@
-const mockFn = () => {
-  console.warn('fs should not be used in browser build') // eslint-disable-line no-console
-  return null
-}
+const mockFn = () => null
 
 module.exports = {
   parse: mockFn,

@@ -31,13 +31,15 @@ module.exports = {
     path: path.resolve(__dirname, './lib'),
     libraryTarget: 'umd',
     umdNamedDefine: true,
+    globalObject: 'typeof self !== \'undefined\' ? self : this'
   },
   resolve: {
     alias: {
       'path': path.resolve(__dirname, 'browser-mocks/path'),
       'fs': path.resolve(__dirname, 'browser-mocks/fs'),
       'uglify-js': path.resolve(__dirname, 'browser-mocks/uglify-js'),
-    },
+      'detect-node': path.resolve(__dirname, 'browser-mocks/detect-node')
+    }
   },
   module: {
     rules: [
@@ -49,11 +51,18 @@ module.exports = {
             loader: 'babel-loader',
             options: {
               presets: [
-                '@babel/preset-env',
+                ['@babel/preset-env', {
+                  targets: {
+                    browsers: ['last 2 versions', 'ie >= 11']
+                  },
+                  loose: true
+                }]
               ],
               plugins: [
+                ["@babel/plugin-transform-private-methods", { "loose": true }],
+                ["@babel/plugin-transform-private-property-in-object", { "loose": true }],
                 ["@babel/plugin-proposal-decorators", { "legacy": true }],
-                ["@babel/plugin-proposal-class-properties", { "loose" : true }],
+                ["@babel/plugin-proposal-class-properties", { "loose": true }],
                 "@babel/plugin-proposal-function-bind",
                 "@babel/plugin-proposal-export-default-from",
               ],
@@ -62,6 +71,14 @@ module.exports = {
           },
         ],
       },
-  	],
+    ],
   },
+  node: {
+    global: false,
+    __filename: false,
+    __dirname: false,
+    process: false,
+    Buffer: false,
+    setImmediate: false
+  }
 }
